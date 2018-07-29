@@ -1,6 +1,10 @@
 # Prerequisites
 *.d
 
+README.md
+.gitignore
+launch.json
+
 # Object files
 *.o
 *.ko
