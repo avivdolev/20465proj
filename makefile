@@ -5,7 +5,7 @@ obj := $(src:.c=.o)
 headers = $(wildcard *.h)
 
 # TARGET = $(shell echo $${PWD\#\#*/})
-FLAGS = -Wall -ansi -pedantic
+FLAGS = -Wall -ansi -pedantic -g
 
 %.o: %.c $(headers)
 		gcc $(FLAGS) -o $@ -c $<
