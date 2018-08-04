@@ -8,25 +8,33 @@
 
 int main(int argc, char *argv[]) {
 
-  Control ctrl = CONTROL_INIT;
-  
-  printf("%s %d\n", ctrl.ops_array[bne], (int) sizeof(ctrl));
-  test(&ctrl);
+  if (!--argc) {
+    printf("Usage: assmbler [list of .as files without ext, space "
+           "delimitered.]\n"
+           "Example: assembler x y z\n");
+    return OK;
+  }
 
+  while (argc--) {
+    Control ctrl = CONTROL_INIT;
+    Control *ctrlp = &ctrl;
 
+    if (get_next_file(ctrlp, *++argv)) {
+      if (cleanup(ctrlp)) {
+        fprintf(LOGFILE, "%s\n", "Error closing file!");
+        return !OK;
+      }
+      fprintf(LOGFILE, "%s\n", "Memory allocation problem!");
+      return !OK;
+    }
+    if (!is_empty_list(&ctrlp->errors_array)) {
+      dump_erros(ctrlp);
+      if (cleanup(ctrlp)) {
+        fprintf(LOGFILE, "%s\n", "Error closing file!");
+        return !OK;
+      }
+    }
+  }
 
-  free_list(&ctrl.inst_array);
-  return 0;
-}
-
-void test(Control *ctrl) {
-  double x = 7;
-  double y;
-  add_item(&ctrl->inst_array, &x, sizeof(x));
-  y=9;
-  add_item(&ctrl->inst_array, &y, sizeof(x));
-  y=20;
-  add_item(&ctrl->inst_array, &y, sizeof(x));
-  print_list(&ctrl->inst_array);
-  return;
+  return OK;
 }

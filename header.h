@@ -2,6 +2,10 @@
 Headers file for mmn14
 */
 
+/*__________________ Prevent duplication __________________*/
+#ifndef FILE_H
+#define FILE_H
+
 /*__________________ Libraries __________________*/
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,6 +22,11 @@ Headers file for mmn14
 #define LABEL_END ':'
 #define FIRST_ADDR 100
 #define OK 0
+#define IN_EXT ".as"
+#define OUT_EXT ".ob"
+#define EXT_EXT ".ext"
+#define ENT_EXT ".ent"
+#define LOGFILE stderr
 
 /*Macro to use malloc and exit if allocation failed*/
 #define MALLOC(dst, pntr_type, size)                                           \
@@ -43,7 +52,7 @@ Headers file for mmn14
   QUOTE(jsr)                                                                   \
   QUOTE(rts)                                                                   \
   QUOTE(stop)                                                                  \
-  QUOTE_(unknown_op)
+  Q(unknown_op)
 
 /*
 Set of macros to create enum and string array with matching names,
@@ -51,14 +60,14 @@ so we can easily use "array[operation]" and get the operation as
 a string.
 */
 #define QUOTE(m) m, /*without qutes, to be used with enum*/
-#define QUOTE_(m)                                                              \
+#define Q(m)                                                                   \
   m /*enum cannot end with comma, it throws 'pedantic'                         \
-       warning*/
+         warning*/
 enum OP_CODES { OP_NAMES };
 #undef QUOTE
-#undef QUOTE_
+#undef Q
 #define QUOTE(m) #m, /*add quotes to be used as list of strings*/
-#define QUOTE_(m) #m
+#define Q(m) #m
 
 enum encoding { A, E, R };
 
@@ -68,7 +77,7 @@ enum encoding { A, E, R };
 #define MAX_LABEL 32
 #define MAX_OPERATION 5
 #define MAX_INSTRUCTION 10
-#define MAX_FILE_NAME 50
+#define MAX_FILE_NAME 80
 #define MAX_ERROR_MESSAGE 60
 
 /*__________________ Data Types __________________*/
@@ -112,13 +121,15 @@ typedef struct Symbol {
 /*Control - structure to hold assembler run-time variables*/
 typedef struct Control {
   string ops_array[OPS_NUMBER];
-  string filename;
+  char filename[MAX_FILE_NAME];
+  FILE *fp;
   uint line;
   uint IC;
   uint DC;
-  boolean error_flag;
+  List errors_array;
   List inst_array;
   List data_array;
+  List symbol_table;
 
 } Control;
 
@@ -129,10 +140,24 @@ typedef struct Control {
   }
 
 /*__________________ Functions __________________*/
+/*Detailed documentation inside each file*/
 
 /*list.c*/
-int add_item(List *list, void *data, size_t size);
+int add_item(List *list, void *data, size_t datasize);
 void free_list(List *list);
+boolean is_empty_list(List *list);
 void print_list(List *list);
+void walk_list(List *list, void (*action)(void *));
 
-void test(Control *ctrl);
+/*file_handlers.c*/
+int get_next_file(Control *ctrl, string file);
+
+/*error_handlers.c*/
+int add_error(Control *ctrl, string file, int line, string m);
+void print_error(void *e);
+void dump_erros(Control *ctrl);
+
+/*runtime.c*/
+int cleanup(Control *ctrl);
+
+#endif
