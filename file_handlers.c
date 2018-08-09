@@ -4,7 +4,7 @@ int get_next_file(Control *ctrl, string file) {
   /*
   Description: Try to open next input file. If failed, add an error.
   Input: Control object, filename.
-  Output: !OK if memory allocation problem occured.
+  Output: !OK if memory allocation problem occurred.
   */
 
   string path;

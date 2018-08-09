@@ -7,9 +7,9 @@
 #include "header.h"
 
 int main(int argc, char *argv[]) {
-
+  
   if (!--argc) {
-    printf("Usage: assmbler [list of .as files without ext, space "
+    printf("Usage: assembler [list of .as files without ext, space "
            "delimitered.]\n"
            "Example: assembler x y z\n");
     return OK;
@@ -20,19 +20,18 @@ int main(int argc, char *argv[]) {
     Control *ctrlp = &ctrl;
 
     if (get_next_file(ctrlp, *++argv)) {
-      if (cleanup(ctrlp)) {
-        fprintf(LOGFILE, "%s\n", "Error closing file!");
-        return !OK;
-      }
-      fprintf(LOGFILE, "%s\n", "Memory allocation problem!");
-      return !OK;
+      if (cleanup(ctrlp))
+        PANIC("Error closing file!")
+      else
+        PANIC ("Memory allocation problem!")
     }
+
+
+
     if (!is_empty_list(&ctrlp->errors_array)) {
-      dump_erros(ctrlp);
-      if (cleanup(ctrlp)) {
-        fprintf(LOGFILE, "%s\n", "Error closing file!");
-        return !OK;
-      }
+      dump_errors(ctrlp);
+      if (cleanup(ctrlp))
+        PANIC("Error closing file!")
     }
   }
 

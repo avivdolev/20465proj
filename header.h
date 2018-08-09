@@ -28,6 +28,12 @@ Headers file for mmn14
 #define ENT_EXT ".ent"
 #define LOGFILE stderr
 
+#define PANIC(message)                                                         \
+  {                                                                            \
+    fprintf(LOGFILE, "%s\n", message);                                         \
+    return !OK;                                                                \
+  }
+
 /*Macro to use malloc and exit if allocation failed*/
 #define MALLOC(dst, pntr_type, size)                                           \
   dst = (pntr_type *)malloc(size);                                             \
@@ -59,7 +65,7 @@ Set of macros to create enum and string array with matching names,
 so we can easily use "array[operation]" and get the operation as
 a string.
 */
-#define QUOTE(m) m, /*without qutes, to be used with enum*/
+#define QUOTE(m) m, /*without quotes, to be used with enum*/
 #define Q(m)                                                                   \
   m /*enum cannot end with comma, it throws 'pedantic'                         \
          warning*/
@@ -80,7 +86,7 @@ enum encoding { A, E, R };
 #define MAX_FILE_NAME 80
 #define MAX_ERROR_MESSAGE 60
 
-/*__________________ Data Types __________________*/
+/*__________________ Data Structures __________________*/
 typedef struct node {
   void *data;
   struct node *next;
@@ -155,7 +161,7 @@ int get_next_file(Control *ctrl, string file);
 /*error_handlers.c*/
 int add_error(Control *ctrl, string file, int line, string m);
 void print_error(void *e);
-void dump_erros(Control *ctrl);
+void dump_errors(Control *ctrl);
 
 /*runtime.c*/
 int cleanup(Control *ctrl);

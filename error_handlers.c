@@ -20,13 +20,13 @@ int add_error(Control *ctrl, string file, int line, string m) {
   return OK;
 }
 
-void dump_erros(Control *ctrl) {
+void dump_errors(Control *ctrl) {
   walk_list(&ctrl->errors_array, &print_error);
 }
 
 void print_error(void *e) {
   Error *ep = (Error *) e;
-  fprintf(LOGFILE ,"%s: line %d: %s\n", ep->file, ep->line, ep->message);
+  fprintf(LOGFILE ,"%s%s: line %d: %s\n", ep->file, IN_EXT, ep->line, ep->message);
   return;
 }
 
