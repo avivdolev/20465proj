@@ -1,4 +1,8 @@
 Dockerfile
+x
+y
+z
+.gitignore
 *.as
 *.ext
 *.ent

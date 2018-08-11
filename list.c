@@ -1,11 +1,11 @@
 #include "header.h"
 
 
-int add_item(List *list, void *data, size_t datasize) {
+void add_item(List *list, void *data, size_t datasize) {
   /*
-  Description: Add general item to a list.
+  Description: Add general item to a list. exit program if allocation failed.
   Input: List pointer, pointer to a data struct, size of data.
-  Output: OK if mallocs succeeded and !OK else.
+  Output: void.
   */
   Node *new;
 
@@ -22,7 +22,7 @@ int add_item(List *list, void *data, size_t datasize) {
     list->tail = new;
   }
 
-  return OK;
+  return;
 }
 
 void free_list(List *list) {

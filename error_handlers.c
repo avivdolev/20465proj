@@ -1,10 +1,10 @@
 #include "header.h"
 
-int add_error(Control *ctrl, string file, int line, string m) {
+void add_error(Control *ctrl, string file, int line, string m) {
   /*
   Description: Add an error to errors array.
   Input: Control object, file name, line number and error message.
-  Output: OK if error added successfully and !OK else.
+  Output: void.
   */
   Error e;
   Error *ep = &e;
@@ -13,11 +13,9 @@ int add_error(Control *ctrl, string file, int line, string m) {
   ep->line = line;
   strncpy(ep->message, m, MAX_ERROR_MESSAGE);
 
-  if (add_item(&ctrl->errors_array, ep, sizeof(e))) {
-    return !OK;
-  }
+  add_item(&ctrl->errors_array, ep, sizeof(e));
 
-  return OK;
+  return;
 }
 
 void dump_errors(Control *ctrl) {

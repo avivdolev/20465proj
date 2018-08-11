@@ -2,15 +2,15 @@
 Headers file for mmn14
 */
 
-/*__________________ Prevent duplication __________________*/
+/*__________________ Prevent header duplication __________________*/
 #ifndef FILE_H
 #define FILE_H
 
 /*__________________ Libraries __________________*/
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 
 /*__________________ Definitions __________________*/
 #define WORD_SIZE 14
@@ -34,18 +34,26 @@ enum encodings { A, E, R };
 
 /*__________________ Macros __________________*/
 
+/*Usage prompt: if assembler called without arguments.*/
+#define PROMPT                                                                 \
+  "Usage: assembler [list of .as files without ext, space "                    \
+  "delimitered.]\n"                                                            \
+  "Example: assembler x y z\n"
+
 /*Throw error and exit main function*/
 #define PANIC(message)                                                         \
   {                                                                            \
     fprintf(LOGFILE, "%s\n", message);                                         \
-    return !OK;                                                                \
+    exit(!OK);                                                                 \
   }
 
 /*Use malloc and exit if allocation failed*/
 #define MALLOC(dst, pntr_type, size)                                           \
-  dst = (pntr_type *)malloc(size);                                             \
-  if (dst == NULL)                                                             \
-  return !OK
+  {                                                                            \
+    dst = (pntr_type *)malloc(size);                                           \
+    if (dst == NULL)                                                           \
+      PANIC("Memory allocation problem, assembler crashed!")                   \
+  }
 
 /*List of assembler operations:*/
 #define OP_NAMES                                                               \
@@ -154,23 +162,23 @@ typedef struct Control {
 /*Detailed documentation inside each file*/
 
 /*list.c*/
-int add_item(List *list, void *data, size_t datasize);
+void add_item(List *list, void *data, size_t datasize);
 void free_list(List *list);
 boolean is_empty_list(List *list);
 void print_list(List *list);
 void walk_list(List *list, void (*action)(void *));
 
 /*file_handlers.c*/
-int get_next_file(Control *ctrl, string file);
+void get_next_file(Control *ctrl, string file);
 string get_line(Control *ctrl, string s);
 
 /*error_handlers.c*/
-int add_error(Control *ctrl, string file, int line, string m);
+void add_error(Control *ctrl, string file, int line, string m);
 void print_error(void *e);
 void dump_errors(Control *ctrl);
 
 /*runtime.c*/
-int cleanup(Control *ctrl);
+void cleanup(Control *ctrl);
 int assembler_first_go(Control *ctrl);
 
 /*__________________ End of header file __________________*/

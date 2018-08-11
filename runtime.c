@@ -8,6 +8,7 @@ int assembler_first_go(Control *ctrl) {
     /*Ignore comments and blank lines*/
     if (*line == COMMENT || *line == '\n')
       continue;
+    
 
     printf("file: %s%s, line %d: %s\n",ctrl->filename, IN_EXT,ctrl->line,line);
 
@@ -16,18 +17,18 @@ int assembler_first_go(Control *ctrl) {
   return OK;
 }
 
-int cleanup(Control *ctrl) {
+void cleanup(Control *ctrl) {
   /*
   Description: Cleanup run-time enviornment: free allocated memory, close files.
   Input: Control object.
-  Output: !OK if closing any file yielded err and OK else.
+  Output: void.
   */
   if (ctrl->fp)
     if (fclose(ctrl->fp) == EOF)
-      return !OK;
+      PANIC("Error closing files, assembler crashed!")
   free_list(&ctrl->errors_array);
   free_list(&ctrl->inst_array);
   free_list(&ctrl->data_array);
   free_list(&ctrl->symbol_table);
-  return OK;
+  return;
 }

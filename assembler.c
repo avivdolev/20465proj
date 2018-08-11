@@ -10,11 +10,9 @@
 
 int main(int argc, char *argv[]) {
 
-  /*Usage prompt*/
+  /*Check command line argument, if absent prompt message and exit.*/
   if (!--argc) {
-    printf("Usage: assembler [list of .as files without ext, space "
-           "delimitered.]\n"
-           "Example: assembler x y z\n");
+    printf(PROMPT);
     return OK;
   }
 
@@ -24,31 +22,25 @@ int main(int argc, char *argv[]) {
     Control *ctrlp = &ctrl;
 
     /*Get next source file*/
-    if (get_next_file(ctrlp, *++argv)) {
-      if (cleanup(ctrlp))
-        PANIC("Error closing file!")
-      else
-        PANIC("Memory allocation problem!")
-    }
+    get_next_file(ctrlp, *++argv);
 
     /*Start proccessing source file*/
     if (is_empty_list(&ctrlp->errors_array)) {
-      if (assembler_first_go(ctrlp))
-        PANIC("Memory allocation problem!")
+      assembler_first_go(ctrlp);
     }
 
     /*Create output files*/
     if (is_empty_list(&ctrlp->errors_array)) {
       ;
     }
+
     /*Log errors, no output created*/
     else {
       dump_errors(ctrlp);
     }
 
     /*Clean everything before next source file*/
-    if (cleanup(ctrlp))
-      PANIC("Error closing files!")
+    cleanup(ctrlp);
   }
 
   return OK;
