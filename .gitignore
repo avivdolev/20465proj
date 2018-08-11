@@ -1,3 +1,8 @@
+Dockerfile
+*.as
+*.ext
+*.ent
+*.sh
 # Prerequisites
 *.d
 

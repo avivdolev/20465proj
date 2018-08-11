@@ -25,8 +25,8 @@ void dump_errors(Control *ctrl) {
 }
 
 void print_error(void *e) {
-  Error *ep = (Error *) e;
-  fprintf(LOGFILE ,"%s%s: line %d: %s\n", ep->file, IN_EXT, ep->line, ep->message);
+  Error *ep = (Error *)e;
+  fprintf(LOGFILE, "%s%s: line %d: %s\n", ep->file, IN_EXT, ep->line,
+          ep->message);
   return;
 }
-

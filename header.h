@@ -10,37 +10,44 @@ Headers file for mmn14
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
-/*__________________ Definitions and Macros __________________*/
+/*__________________ Definitions __________________*/
 #define WORD_SIZE 14
 #define ZERO '.'
 #define ONE '/'
-#define TRUE 1
-#define FALSE 0
 #define INSTANT '#'
 #define COMMENT ';'
+#define SEP ','
 #define LABEL_END ':'
 #define FIRST_ADDR 100
-#define OK 0
 #define IN_EXT ".as"
 #define OUT_EXT ".ob"
 #define EXT_EXT ".ext"
 #define ENT_EXT ".ent"
+#define TRUE 1
+#define FALSE 0
+#define OK 0
 #define LOGFILE stderr
 
+enum encodings { A, E, R };
+
+/*__________________ Macros __________________*/
+
+/*Throw error and exit main function*/
 #define PANIC(message)                                                         \
   {                                                                            \
     fprintf(LOGFILE, "%s\n", message);                                         \
     return !OK;                                                                \
   }
 
-/*Macro to use malloc and exit if allocation failed*/
+/*Use malloc and exit if allocation failed*/
 #define MALLOC(dst, pntr_type, size)                                           \
   dst = (pntr_type *)malloc(size);                                             \
   if (dst == NULL)                                                             \
   return !OK
 
-/*List of operations:*/
+/*List of assembler operations:*/
 #define OP_NAMES                                                               \
   QUOTE(mov)                                                                   \
   QUOTE(cmp)                                                                   \
@@ -74,8 +81,6 @@ enum OP_CODES { OP_NAMES };
 #undef Q
 #define QUOTE(m) #m, /*add quotes to be used as list of strings*/
 #define Q(m) #m
-
-enum encoding { A, E, R };
 
 /*__________________ Limits __________________*/
 #define OPS_NUMBER (unknown_op + 1)
@@ -157,6 +162,7 @@ void walk_list(List *list, void (*action)(void *));
 
 /*file_handlers.c*/
 int get_next_file(Control *ctrl, string file);
+string get_line(Control *ctrl, string s);
 
 /*error_handlers.c*/
 int add_error(Control *ctrl, string file, int line, string m);
@@ -165,5 +171,8 @@ void dump_errors(Control *ctrl);
 
 /*runtime.c*/
 int cleanup(Control *ctrl);
+int assembler_first_go(Control *ctrl);
+
+/*__________________ End of header file __________________*/
 
 #endif
