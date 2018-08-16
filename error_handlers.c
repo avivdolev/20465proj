@@ -9,8 +9,8 @@ void add_error(Control *ctrl, string file, int line, string m) {
   Error e;
   Error *ep = &e;
 
-  strncpy(ep->file, file, MAX_FILE_NAME);
-  ep->line = line;
+  strncpy(ep->file, ctrl->filename, MAX_FILE_NAME);
+  ep->line = ctrl->line;
   strncpy(ep->message, m, MAX_ERROR_MESSAGE);
 
   add_item(&ctrl->errors_array, ep, sizeof(e));
@@ -24,7 +24,7 @@ void dump_errors(Control *ctrl) {
 
 void print_error(void *e) {
   Error *ep = (Error *)e;
-  fprintf(LOGFILE, "%s%s: line %d: %s\n", ep->file, IN_EXT, ep->line,
+  fprintf(LOGFILE, "%s%s: line %d: %s", ep->file, IN_EXT, ep->line,
           ep->message);
   return;
 }

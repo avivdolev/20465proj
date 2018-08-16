@@ -48,8 +48,7 @@ string get_line(Control *ctrl, string s) {
 
   if (!fgets(s, MAX_SRC_LINE, ctrl->fp))
     return NULL;
-  for (i = 0; isspace(*(s + i)) && *(s+i) != '\n'; i++)
-    ;
+  i = trim(s);
   
   newline = strchr(s, '\n');
   if (newline != (s+i) && newline != NULL)

@@ -20,6 +20,7 @@ Headers file for mmn14
 #define COMMENT ';'
 #define SEP ','
 #define LABEL_END ':'
+#define INST '.'
 #define FIRST_ADDR 100
 #define IN_EXT ".as"
 #define OUT_EXT ".ob"
@@ -73,25 +74,36 @@ enum encodings { A, E, R };
   QUOTE(jsr)                                                                   \
   QUOTE(rts)                                                                   \
   QUOTE(stop)                                                                  \
-  Q(unknown_op)
+  Q(EOCL)
+/*End of Command List*/
+
+#define INST_NAMES                                                             \
+  QUOTE(.string)                                                          \
+  QUOTE(.data)                                                            \
+  QUOTE(.entry)                                                           \
+  QUOTE(.extern)                                                          \
+  Q(EOIL)
+/*End of Instructions List*/
 
 /*
 Set of macros to create enum and string array with matching names,
 so we can easily use "array[operation]" and get the operation as
 a string.
 */
-#define QUOTE(m) m, /*without quotes, to be used with enum*/
-#define Q(m)                                                                   \
-  m /*enum cannot end with comma, it throws 'pedantic'                         \
-         warning*/
-enum OP_CODES { OP_NAMES };
+#define QUOTE(m) m ## _,
+/*without quotes, to be used with enum*/
+#define Q(m) m
+
+enum { OP_NAMES };
+enum { i_string, i_data , i_extern, i_entry , EOIL};
 #undef QUOTE
 #undef Q
 #define QUOTE(m) #m, /*add quotes to be used as list of strings*/
 #define Q(m) #m
 
 /*__________________ Limits __________________*/
-#define OPS_NUMBER (unknown_op + 1)
+#define OPS_NUMBER (EOCL + 1)
+#define INST_NUMBER (EOIL + 1)
 #define MAX_SRC_LINE 81
 #define MAX_LABEL 32
 #define MAX_OPERATION 5
@@ -140,6 +152,7 @@ typedef struct Symbol {
 /*Control - structure to hold assembler run-time variables*/
 typedef struct Control {
   string ops_array[OPS_NUMBER];
+  string instnames_array[INST_NUMBER];
   char filename[MAX_FILE_NAME];
   FILE *fp;
   uint line;
@@ -155,7 +168,7 @@ typedef struct Control {
 /*Macro to initialize control object*/
 #define CONTROL_INIT                                                           \
   {                                                                            \
-    { OP_NAMES }                                                               \
+    {OP_NAMES}, { INST_NAMES }                                                 \
   }
 
 /*__________________ Functions __________________*/
@@ -178,8 +191,10 @@ void print_error(void *e);
 void dump_errors(Control *ctrl);
 
 /*runtime.c*/
-void cleanup(Control *ctrl);
 int assembler_first_go(Control *ctrl);
+boolean find_label(Control *ctrl, string s);
+int trim(string s);
+void cleanup(Control *ctrl);
 
 /*__________________ End of header file __________________*/
 
