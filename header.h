@@ -106,8 +106,9 @@ a string.
 #define Q(m) m
 
 enum op_enum { OP_NAMES };
-enum inst_enum { i_string, i_data, i_extern, i_entry, EOIL };
+enum inst_enum { i_string, i_data, i_entry, i_extern, EOIL };
 enum reg_enum { REG_NAMES };
+enum key_words {Op, In, Re};
 #undef QUOTE
 #undef Q
 #define QUOTE(m) #m, /*add quotes to be used as list of strings*/
@@ -174,7 +175,7 @@ typedef struct Control {
   uint IC;
   uint DC;
   List errors_array;
-  List inst_array;
+  List instruction_array;
   List data_array;
   List symbol_table;
 
@@ -207,9 +208,14 @@ void dump_errors(Control *ctrl);
 
 /*runtime.c*/
 int assembler_first_go(Control *ctrl);
-boolean find_label(Control *ctrl, string s);
-int trim(string s);
 void cleanup(Control *ctrl);
+
+/*assembler_utils.c*/
+boolean find_label(Control *ctrl, string s);
+int isReservedWord(Control *ctrl, string s, int EOL);
+int trim(string s);
+boolean edge_case_string(Control *ctrl, string token);
+
 
 /*__________________ End of header file __________________*/
 

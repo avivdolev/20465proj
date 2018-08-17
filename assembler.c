@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
   while (argc--) {
     Control ctrl = CONTROL_INIT;
     Control *ctrlp = &ctrl;
-
+    
     /*Get next source file*/
     get_next_file(ctrlp, *++argv);
 
