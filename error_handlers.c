@@ -1,6 +1,6 @@
 #include "header.h"
 
-void add_error(Control *ctrl, string file, int line, string m) {
+void add_error(Control *ctrl, string m) {
   /*
   Description: Add an error to errors array.
   Input: Control object, file name, line number and error message.

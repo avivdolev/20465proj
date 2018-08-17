@@ -11,8 +11,9 @@ void get_next_file(Control *ctrl, string file) {
   string path;
 
   if (strlen(file) > MAX_FILE_NAME) {
-    add_error(ctrl, file, ctrl->line,
-                     "Max filename length is: " Q(MAX_FILE_NAME) "\n");
+    strncpy(ctrl->filename, file, MAX_FILE_NAME);
+    *(ctrl->filename + MAX_FILE_NAME) = '\0';
+    add_error(ctrl, "Max filename length is: " QM(MAX_FILE_NAME) "\n");
     return;
   }
 
@@ -22,14 +23,14 @@ void get_next_file(Control *ctrl, string file) {
   strcpy(path, file);
 
   if (!(ctrl->fp = fopen(strcat(path, IN_EXT), "r")))
-    add_error(ctrl, file, ctrl->line, "File does not exist.\n");
+    add_error(ctrl, "File does not exist.\n");
 
   else if ((c = fgetc(ctrl->fp) == EOF)) {
-    add_error(ctrl, file, ctrl->line, "File is empty.\n");
+    add_error(ctrl, "File is empty.\n");
   }
 
   else if (fseek(ctrl->fp, 0, SEEK_SET)) {
-    add_error(ctrl, file, ctrl->line, "Problem handling file.\n");
+    add_error(ctrl, "Problem handling file.\n");
   }
 
   free(path);
@@ -49,9 +50,9 @@ string get_line(Control *ctrl, string s) {
   if (!fgets(s, MAX_SRC_LINE, ctrl->fp))
     return NULL;
   i = trim(s);
-  
+
   newline = strchr(s, '\n');
-  if (newline != (s+i) && newline != NULL)
+  if (newline != (s + i) && newline != NULL)
     *(strchr(s, '\n')) = '\0';
   strcpy(s, s + i);
   return s;

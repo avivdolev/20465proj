@@ -56,7 +56,7 @@ enum encodings { A, E, R };
       PANIC("Memory allocation problem, assembler crashed!")                   \
   }
 
-/*List of assembler operations:*/
+/*List of assembler operations*/
 #define OP_NAMES                                                               \
   QUOTE(mov)                                                                   \
   QUOTE(cmp)                                                                   \
@@ -77,39 +77,53 @@ enum encodings { A, E, R };
   Q(EOCL)
 /*End of Command List*/
 
+/*List of assembler instructions*/
 #define INST_NAMES                                                             \
-  QUOTE(.string)                                                          \
-  QUOTE(.data)                                                            \
-  QUOTE(.entry)                                                           \
-  QUOTE(.extern)                                                          \
+  QUOTE(.string)                                                               \
+  QUOTE(.data)                                                                 \
+  QUOTE(.entry)                                                                \
+  QUOTE(.extern)                                                               \
   Q(EOIL)
 /*End of Instructions List*/
 
+/*List of assembler registeries*/
+#define REG_NAMES                                                              \
+  QUOTE(r1)                                                                    \
+  QUOTE(r2)                                                                    \
+  QUOTE(r3)                                                                    \
+  QUOTE(r4)                                                                    \
+  QUOTE(r5)                                                                    \
+  QUOTE(r6)                                                                    \
+  Q(EORL)
+/*End of Reg List*/
 /*
-Set of macros to create enum and string array with matching names,
+Set of macros to create enums and string arrays with matching names,
 so we can easily use "array[operation]" and get the operation as
 a string.
 */
-#define QUOTE(m) m ## _,
+#define QUOTE(m) m##_,
 /*without quotes, to be used with enum*/
 #define Q(m) m
 
-enum { OP_NAMES };
-enum { i_string, i_data , i_extern, i_entry , EOIL};
+enum op_enum { OP_NAMES };
+enum inst_enum { i_string, i_data, i_extern, i_entry, EOIL };
+enum reg_enum { REG_NAMES };
 #undef QUOTE
 #undef Q
 #define QUOTE(m) #m, /*add quotes to be used as list of strings*/
 #define Q(m) #m
+#define QM(m) Q(m)
 
 /*__________________ Limits __________________*/
 #define OPS_NUMBER (EOCL + 1)
 #define INST_NUMBER (EOIL + 1)
+#define REGS_NUMBER (EORL + 1)
 #define MAX_SRC_LINE 81
 #define MAX_LABEL 32
-#define MAX_OPERATION 5
+#define MAX_OPERATION 81
 #define MAX_INSTRUCTION 10
-#define MAX_FILE_NAME 80
-#define MAX_ERROR_MESSAGE 60
+#define MAX_FILE_NAME 81
+#define MAX_ERROR_MESSAGE 80
 
 /*__________________ Data Structures __________________*/
 typedef struct node {
@@ -136,7 +150,7 @@ typedef ushort word;
 
 /*Error info*/
 typedef struct Error {
-  char file[MAX_FILE_NAME];
+  char file[MAX_FILE_NAME + 1];
   int line;
   char message[MAX_ERROR_MESSAGE];
 } Error;
@@ -153,7 +167,8 @@ typedef struct Symbol {
 typedef struct Control {
   string ops_array[OPS_NUMBER];
   string instnames_array[INST_NUMBER];
-  char filename[MAX_FILE_NAME];
+  string regs_array[REGS_NUMBER];
+  char filename[MAX_FILE_NAME + 1];
   FILE *fp;
   uint line;
   uint IC;
@@ -168,7 +183,7 @@ typedef struct Control {
 /*Macro to initialize control object*/
 #define CONTROL_INIT                                                           \
   {                                                                            \
-    {OP_NAMES}, { INST_NAMES }                                                 \
+    {OP_NAMES}, {INST_NAMES}, { REG_NAMES }                                    \
   }
 
 /*__________________ Functions __________________*/
@@ -186,7 +201,7 @@ void get_next_file(Control *ctrl, string file);
 string get_line(Control *ctrl, string s);
 
 /*error_handlers.c*/
-void add_error(Control *ctrl, string file, int line, string m);
+void add_error(Control *ctrl, string m);
 void print_error(void *e);
 void dump_errors(Control *ctrl);
 
